@@ -1,0 +1,103 @@
+<nav class="navbar navbar-dark bg-primary mb-3">
+  <a class="navbar-brand" href="#">Matches' match</a>
+  <ul class="navbar-nav mr-auto">
+    <li class="nav-item">
+      <a class="nav-link" href="#" (click)="game.reset()">Reset</a>
+    </li>
+  </ul>
+  <span class="navbar-text">
+    <div>
+      Icons made by
+      <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from
+      <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+    </div>
+  </span>
+</nav>
+
+<div class="col-12 d-flex">
+  <!-- Player 1 -->
+  <div class="col-3 d-flex flex-column align-items-center text-primary">
+    <h2>Player One Score :</h2>
+    <h3>{{ game.scores.one }}</h3>
+  </div>
+
+  <div
+    class="col-6 d-flex justify-content-center align-items-center flex-column"
+  >
+    <!-- Matches display -->
+    <div
+      *ngIf="game.currentMatchesNb"
+      class="align-items-center d-flex flex-column"
+    >
+      <h4>Current number of matches : {{ game.currentMatchesNb }}</h4>
+      <div>
+        <img
+          src="../assets/match.png"
+          *ngFor="let i of [].constructor(game.currentMatchesNb)"
+        />
+      </div>
+    </div>
+
+    <!-- Win display -->
+    <h1 *ngIf="game.currentMatchesNb === 0">
+      Player {{ game.isPlayerOnePlaying ? "One" : "Two" }} win this match !
+    </h1>
+
+    <!-- New Game prompt -->
+    <div
+      class="d-flex align-items-center flex-column"
+      *ngIf="
+        !game.currentMatchesNb || game.currentMatchesNb === 0;
+        else playingPrompt
+      "
+    >
+      <label>Number of matches : </label>
+      <div class="align-items-center d-flex">
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="minValue"
+          [class.border-danger]="!minValue || minValue > maxValue"
+        />
+        <span class="px-2">-</span>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="maxValue"
+          [class.border-danger]="!maxValue || minValue > maxValue"
+        />
+      </div>
+      <button class="btn btn-primary mt-2" (click)="newGame()">New Game</button>
+    </div>
+
+    <!-- Playing prompt -->
+    <ng-template #playingPrompt>
+      <div
+        class="align-items-center d-flex flex-column mt-4"
+        [ngClass]="{
+          'text-primary': game.isPlayerOnePlaying,
+          'text-danger': !game.isPlayerOnePlaying
+        }"
+      >
+        <h4>Ready Player {{ game.isPlayerOnePlaying ? "One" : "Two" }} ?</h4>
+        <h5>How many matches would you like to take ?</h5>
+        <div>
+          <button
+            *ngFor="let i of [1, 2, 3]"
+            [disabled]="i > game.currentMatchesNb"
+            (click)="game.play(i)"
+            class="ml-2 btn btn-outline-primary"
+          >
+            {{ i }}
+          </button>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Player 2 -->
+  <div class="col-3 d-flex flex-column align-items-center text-danger">
+    <h2>Player Two Score :</h2>
+    <h3>{{ game.scores.two }}</h3>
+  </div>
+</div>
